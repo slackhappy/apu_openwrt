@@ -49,5 +49,5 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
       kmod-fs-vfat fstools\   # fat filesystem
       kmod-sp5100_tco \       # hw watchdog
       kmod-crypto-hw-ccp \    # hw crypto acceleration
-      kmod-pcspkr kmod-sound-core # sound flashrom tcpdump"
+      kmod-pcspkr kmod-sound-core" #
     ````
