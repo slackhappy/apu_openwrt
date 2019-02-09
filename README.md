@@ -35,19 +35,7 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
     tar -xf -
     ```
 
-1. Make the image
+1. Make the image.  We'll specify the packages we want to include in the build.  I tried installing `ath10k-firmware-qca988x` from opkg with a generic OpenWRT image, but I wasn't able to.  This is one of the reasons why I'm using the image builder instead of a generic image and downloading the rest on the device.
     ```
-    cd openwrt-imagebuilder-18.06.2-x86-64.Linux-x86_64/
-    make image PACKAGES="\
-      wget \        # ssl-enabled wget
-      tcpdump \     # basic network debugging
-      flashrom \    # flash new APU firmware
-      kmod-ath10k \ # wifi
-      kmod-gpio-button-hotplug kmod-gpio-nct5104d \ # gpio header
-      kmod-leds-gpio kmod-leds-apu2 \ # apu2 leds
-      kmod-usb-ohci kmod-usb2 kmod-usb3 \ # usb
-      kmod-fs-vfat fstools\   # fat filesystem
-      kmod-sp5100_tco \       # hw watchdog
-      kmod-crypto-hw-ccp \    # hw crypto acceleration
-      kmod-pcspkr kmod-sound-core" #
-    ````
+    make image PACKAGES="kmod-ath10k ath10k-firmware-qca988x kmod-gpio-button-hotplug kmod-gpio-nct5104d kmod-usb-ohci kmod-usb2 kmod-usb3 kmod-fs-vfat kmod-sp5100_tco kmod-crypto-hw-ccp kmod-leds-gpio kmod-pcspkr kmod-sound-core wget fstools flashrom tcpdump"
+    ```
