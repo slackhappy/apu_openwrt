@@ -48,17 +48,14 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
 [Teklager.se](https://teklager.se/en/knowledge-base/openwrt-installation-instructions/) has a route that I like.  You boot into a live linux that can 1) download an image 2) apply to the mSATA drive 3) fix up the partioning.  The Debian netinst USB can do that, so thats what I'll use.
 
 1. Download the [Debian netinst](https://www.debian.org/CD/netinst/) amd64 iso.  Using `dd`, copy it to a USB drive. 
+    Insert the drive, use diskutil list to find and unmount the drive device node /dev/diskX .  Be extra sure you have the right one!
     ```
-    ### Insert the drive
-    
-    ### use diskutil list to find and unmount the drive device node /dev/diskX . X Be extra sure you have the right one!
-    
     $ diskutil list
     $ diskutil unmountDisk /dev/diskX
-   
-    ###  directly apply the image to the drive.  this will erase everything on your flashdrive
-    ###  note the 'r' in rdiskX here.
+    ```
     
+    Directly apply the image to the drive.  This will **erase everything** on the device! Note the 'r' in rdiskX here.
+    ```
     $ sudo dd bs=8m of=/dev/rdiskX if=debian-9.7.0-amd64-netinst.iso
     ```
 
@@ -67,36 +64,40 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
 1. You are now in the rescue setup.  You should see `Rescue mode` at the time.  It looks like an install, but its not, just keep going!  Choose your language, country, etc.  Skip loading any firmware, and choose `enp0s1` as your primary ethernet, if it asks.  When it asks if you want to choose a root filesystem device, *scroll down* and choose "Do not use a root file system".  After all, we are here to overwrite it!  Finally, you should be able to execute the rescue shell.  Whew!
 
 1. In the rescue shell, we'll proceed similar to the [Teklager.se](https://teklager.se/en/knowledge-base/openwrt-installation-instructions/) route.  1) Download the image using wget, extract if needed. 2) `dd` the image to the mSATA drive, and 3) use gparted to fix the partition size so that the full capacity of the mSATA drive is usable.
+
+    Download and unzip:
     ```
-    ### Download and unzip
-    
     ~ # wget https://github.com/slackhappy/apu_openwrt/raw/master/openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz
     ~ # gunzip openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz 
+    ```
     
-    ### Apply the image
-    
+    Apply the image:
+    ```
     ~ # dd if=openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img of=/dev/sda bs=4M; sync
     68+1 records in
     68+1 records out
+    ```
     
-    
-    ### Confirm the image application 
-
+    Confirm the image application - should look like this:
+    ```
     ~ # parted /dev/sda print
     Number  Start   End     Size    Type     File system  Flags
      1      262kB   17.0MB  16.8MB  primary  ext2         boot
      2      17.3MB  286MB   268MB   primary  ext2
-    
-    
-    ### Expand the 286MB partition to the rest of the disk size (mine 60G)
-    
+    ```
+
+    Expand the 286MB partition to the rest of the disk size (mine is 60G)
+    ```  
     ~ #  parted /dev/sda resizepart 2 60G
     Information: You may need to update /etc/fstab.
     
-    
-    ### Update the filesystem to match the partition
-    
     ~# resize2fs /dev/sda2 
-    
     ```
 1. All done! Remove the USB boot disk, cross your fingers, and `reboot`.
+
+## Enabling the wireless, and other post configuration
+
+1. run `passwd` to set a password
+1. enable the wireless by editing `/etc/config/wireless` to set disabled from `'1'` to `'0'`
+1. to switch the device to use 2.4ghz bands instead of 5ghz bands, edit `/etc/config/wireless` to set `hwmode` to `11g` instead of `11a` (don't worry, it will use 2.4ghz N if your device has it), and delete the `htmode` line - it will be autodiscovered.
+1. `reboot`
