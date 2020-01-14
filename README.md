@@ -6,7 +6,7 @@ Materials I used:
 - a Macbook with no ethernet jack :-(
 - a [USB-to-Serial cable](https://www.amazon.com/Adapter-Chipset-CableCreation-Converter-Register/dp/B0769FY7R7)
 - a USB flash drive
-- the APU2 itself (with a mSATA drive, and a [Compex wle600vx](https://pcengines.ch/wle600vx.htm) wifi card).
+- the APU2 itself (with a mSATA drive, a [Compex wle600vx](https://pcengines.ch/wle600vx.htm) wifi card for 5Ghz, and a USB [Panda Wireless PAU06](http://www.pandawireless.com/Products%20|%20Panda%20Wireless.html) dongle for 2.4Ghz - the wle600vx cannot do simultaneous dual-band, it has one radio).
 
 Here is the story of how I got it set up.
 
@@ -28,24 +28,24 @@ The [recommended platform](https://openwrt.org/docs/guide-user/additional-softwa
 
 I came up with this procedure by combining the [ImageBuilder docs](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), instructions for a source build (much longer and requires a > 10GB virtual hard disk) from [3mdeb](https://3mdeb.com/firmware/installing-openwrt-on-apu3-platform/), and the [OpenWRT APU2 guide](https://openwrt.org/toh/pcengines/apu2).
 
-1. Run an amd64 linux.  I downloaded [VirtualBox](https://www.virtualbox.org/) on my mac, and created Debian 64-bit system and used the defaults (1G ram, 8GB Virtual HD).  Those seemed to be good defaults for this use case.  I ended up needing about 4GB for the minimal install (no graphical environment - just SSH server + base system, and the ImageBuilder deps).
+1. Run an amd64 linux.  I downloaded [VirtualBox](https://www.virtualbox.org/) on my mac, and created Debian 64-bit system and used the defaults (1G ram, 8G Virtual HD) using the [Debian netinst](https://www.debian.org/CD/netinst/) amd64 iso.  1G ram, 8G hd seemed to be good defaults for this use case.  I ended up needing about 4GB for the minimal install (no graphical environment - just SSH server + base system, and the ImageBuilder deps).  I set the network config to be Bridged, so that I could ssh to the to the VM to run commands, and the VM itself could download stuff from the internet.
 
-1. On your linux machine, download the OpenWRT ImageBuilder
+1. On your linux machine/VM, download the OpenWRT ImageBuilder
     ```
     $ curl -L  https://downloads.openwrt.org/releases/18.06.2/targets/x86/64/openwrt-imagebuilder-18.06.2-x86-64.Linux-x86_64.tar.xz | unxz | tar -xf -
     ```
 
-1. Make the image.  We'll specify the packages we want to include in the build.  I tried installing `ath10k-firmware-qca988x` from opkg with a generic OpenWRT image, but I wasn't able to.  This is one of the reasons why I'm using the image builder instead of a generic image and downloading the rest on the device.
+1. Make the image.  We'll specify the packages we want to include in the build.  I wanted to download  `ath10k-firmware-qca988x` from opkg with a generic OpenWRT image, but I wasn't able to.  This is one of the reasons why I'm using the image builder instead of a generic image and downloading the rest on the device.  You may want to change the list of packages (e.g remove adblock).
     ```
     $ cd openwrt-imagebuilder-18.06.2-x86-64.Linux-x86_64/
-    $ make image PACKAGES="hostapd luci kmod-ath10k ath10k-firmware-qca988x kmod-gpio-button-hotplug kmod-gpio-nct5104d kmod-usb-ohci kmod-usb2 kmod-usb3 kmod-fs-vfat kmod-sp5100_tco kmod-crypto-hw-ccp kmod-leds-gpio kmod-pcspkr kmod-sound-core wget fstools flashrom tcpdump ca-bundle" EXTRA_IMAGE_NAME="apu2_ath10k_qca988x"
+    $ make image PACKAGES="adblock ath10k-firmware-qca988x block-mount ca-bundle collectd collectd-mod-sensors flashrom fstools hostapd kmod-ath10k kmod-crypto-hw-ccp kmod-fs-vfat kmod-gpio-button-hotplug kmod-gpio-nct5104d kmod-leds-gpio kmod-pcspkr kmod-rt2800-lib kmod-rt2800-usb kmod-rt2x00-lib kmod-rt2x00-usb kmod-sound-core kmod-sp5100_tco kmod-usb-ohci kmod-usb-storage kmod-usb2 kmod-usb3 luci luci-app-statistics rt2800-usb-firmware tcpdump sysfsutils usbutils wget" EXTRA_IMAGE_NAME="apu2_ath10k_qca988x"
     ```
 
 1. Upload the image to a public location - we'll download it from the Debian rescue stick.  The image output will be here:  `bin/targets/x86/64/openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz`.  I'm using this git repo as my public download source.  You can transfer it some other way, but instead of trying to mount an image in the rescue OS, i thought this would be easier.
 
 
-## Apply your image to the mSATA drive
-[Teklager.se](https://teklager.se/en/knowledge-base/openwrt-installation-instructions/) has a route that I like.  You boot into a live linux that can 1) download an image 2) apply to the mSATA drive 3) fix up the partioning.  The Debian netinst USB can do that, so thats what I'll use.
+## Apply your image to the mSATA drive (initial bootstrap)
+[Teklager.se](https://teklager.se/en/knowledge-base/openwrt-installation-instructions/) has a route that I like.  You boot into a live linux that can 1) download an image 2) apply to the mSATA drive 3) fix up the partioning (optional).  The Debian netinst USB can do that, so thats what I'll use.
 
 1. Download the [Debian netinst](https://www.debian.org/CD/netinst/) amd64 iso.  Using `dd`, copy it to a USB drive. 
     Insert the drive, use diskutil list to find and unmount the drive device node /dev/diskX .  Be extra sure you have the right one!
@@ -86,7 +86,7 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
      2      17.3MB  286MB   268MB   primary  ext2
     ```
 
-    Expand the 286MB partition to the rest of the disk size (mine is 60G)
+    If you want, expand the 286MB partition to the rest of the disk size (mine is 60G).  Note that upgrading to new OpenWRT images will reset this though.
     ```  
     ~ #  parted /dev/sda resizepart 2 60G
     Information: You may need to update /etc/fstab.
@@ -94,6 +94,8 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
     ~# resize2fs /dev/sda2 
     ```
 1. All done! Remove the USB boot disk, cross your fingers, and `reboot`.
+
+
 
 ## Enabling the wireless, and other post configuration
 
