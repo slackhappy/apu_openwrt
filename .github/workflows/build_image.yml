@@ -11,6 +11,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run a multi-line script
       run: |
-        ls
-        sudo apt-get install build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python
+        sh build.sh
         echo done
