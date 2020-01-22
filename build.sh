@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # from https://openwrt.org/docs/guide-user/additional-software/imagebuilder
-DEPS="apt-get install build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python"
+DEPS="build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python"
 
 VERSION="18.06.2"
 
