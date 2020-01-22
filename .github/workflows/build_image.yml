@@ -11,5 +11,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run a multi-line script
       run: |
-        build.sh
+        ./build.sh
         echo done
