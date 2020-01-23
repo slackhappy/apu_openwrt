@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Run a multi-line script
+    - name: builds the 18.06.6 image
       run: |
-        ./build.sh 18.06.6
+        ./build.sh 18.06.6 apu2-ath10k-qca988x-rt2800
         echo done
