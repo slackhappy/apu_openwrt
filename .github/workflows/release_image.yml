@@ -15,7 +15,8 @@ jobs:
         uses: actions/checkout@master
       - name: Build project # This would actually build your project, using zip for an example artifact
         run: |
-          ./build.sh 18.06.6 apu2-ath10k-qca988x-rt2800
+          ./build.sh 18.06.6
+          ./build.sh 19.07.0
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
