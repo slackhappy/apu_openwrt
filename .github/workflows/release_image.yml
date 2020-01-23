@@ -27,8 +27,8 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: Upload Release Asset 18.06
+        id: upload-release-asset-18
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,4 +36,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: openwrt-18.06.6-x86-64-combined-ext4.img.gz
           asset_name: openwrt-18.06.6-x86-64-combined-ext4.img.gz
+          asset_content_type: application/x-gzip
+      - name: Upload Release Asset 19.07
+        id: upload-release-asset-19
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: openwrt-19.07.0-x86-64-combined-ext4.img.gz
+          asset_name: openwrt-19.07.0-x86-64-combined-ext4.img.gz
           asset_content_type: application/x-gzip
