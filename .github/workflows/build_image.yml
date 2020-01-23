@@ -11,5 +11,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: builds the 18.06.6 image
       run: |
-        ./build.sh 18.06.6 apu2-ath10k-qca988x-rt2800
+        ./build.sh 18.06.6
         echo done

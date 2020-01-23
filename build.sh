@@ -9,11 +9,6 @@ if [ -z "$VERSION" ]; then
 fi
 
 
-EXTRA_IMAGE_NAME="$2"
-if [ -z "$EXTRA_IMAGE_NAME" ]; then
-  EXTRA_IMAGE_NAME="apu2-ath10k-qca988x"
-fi
-
 # from https://openwrt.org/docs/guide-user/additional-software/imagebuilder
 DEPS="build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python"
 
@@ -37,8 +32,8 @@ curl -Lqs "${BUILDER_ARCHIVE}" | unxz | tar -xf -
 
 echo "***** BUILDING *****"
 cd "${BUILDER_NAME}"
-make image PACKAGES="${PACKAGES}" EXTRA_IMAGE_NAME="${EXTRA_IMAGE_NAME}"
+make image PACKAGES="${PACKAGES}"
 
 echo "***** OUTPUT *****"
 ls -lh bin/targets/x86/64
-cp bin/targets/x86/64/openwrt-${VERSION}-${EXTRA_IMAGE_NAME}-x86-64-combined-ext4.img.gz ../openwrt-x86-64-combined-ext4.img.gz
+cp bin/targets/x86/64/openwrt-${VERSION}-x86-64-combined-ext4.img.gz ../openwrt-${VERSION}-x86-64-combined-ext4.img.gz
