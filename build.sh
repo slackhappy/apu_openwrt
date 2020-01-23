@@ -40,4 +40,5 @@ cd "${BUILDER_NAME}"
 make image PACKAGES="${PACKAGES}" EXTRA_IMAGE_NAME="${EXTRA_IMAGE_NAME}"
 
 echo "***** OUTPUT *****"
-ls bin/targets/x86/64/openwrt-${VERSION}-${EXTRA_IMAGE_NAME}-x86-64-combined-ext4.img.gz
+ls -lh bin/targets/x86/64
+cp bin/targets/x86/64/openwrt-${VERSION}-${EXTRA_IMAGE_NAME}-x86-64-combined-ext4.img.gz ../openwrt-x86-64-combined-ext4.img.gz
