@@ -1,0 +1,6 @@
+# Useful for debugging attached devices
+CONFIG_BUSYBOX_DEFAULT_LSPCI=y
+
+# https://openwrt.org/toh/pcengines/apu2
+# It's possible to further optimize the produced binaries by generating instructions for AMD family 16h cores
+CONFIG_TARGET_OPTIMIZATION="-Os -pipe -march=btver2"

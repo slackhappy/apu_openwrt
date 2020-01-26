@@ -1,0 +1,5 @@
+# initialize the config. make defconfig will fill in the defaults
+CONFIG_TARGET_x86=y
+CONFIG_TARGET_x86_64=y
+CONFIG_TARGET_x86_64_Generic=y
+CONFIG_IB=y
