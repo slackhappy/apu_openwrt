@@ -8,13 +8,14 @@ if [ "$(whoami)" == "root" ]; then
   SUDO=""
 fi
 
+
 DEPS="build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python curl"
 
 ROOT_DIR=$(pwd)
 
 VERSION=19.07.0
 
-${SUDO} apt-get update
+echo "***** BUILDING IMAGEBUILDER FOR $VERSION *****"
 
 echo "***** INSTALLING DEPS *****"
 ${SUDO} apt-get update
