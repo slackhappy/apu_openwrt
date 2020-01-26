@@ -48,6 +48,7 @@ echo "***** MAKING IMAGEBUILDER *****"
 make
 
 echo "***** DONE *****"
+ls -lh build_dir/target-x86_64_musl
 cd build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64
 
 tar -cJf "${ROOT_DIR}/openwrt-imagebuilder-${VERSION}x86-64.Linux-x86_64-apu2.tar.xz" .
