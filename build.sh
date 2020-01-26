@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 set -eo pipefail
 
 VERSION="$1"
@@ -8,6 +9,7 @@ if [ -z "$VERSION" ]; then
   VERSION="18.06.2"
 fi
 
+echo "***** BUILDING IMAGE FOR $VERSION *****"
 
 # should we sudo?
 SUDO="sudo"
