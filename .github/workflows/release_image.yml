@@ -32,6 +32,7 @@ jobs:
           name: openwrt-19.07.0-x86-64-combined-ext4.img.gz
   release:
     name: Build Release
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact 18.06
