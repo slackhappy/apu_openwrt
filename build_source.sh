@@ -28,15 +28,15 @@ cd "openwrt-${VERSION}"
 # initialize the config
 mv "${ROOT_DIR}/.config-init" .config
 
-echo "***** MAKING CONFIG *****"
+echo "***** MAKING DEFAULT CONFIG *****"
 # fill in the defaults
 make defconfig
 
-# override some values
-cat "${ROOT_DIR}/.config-apu2" >> .config
+echo "***** UPDATING CONFIG *****"
+cat "${ROOT_DIR}/.config-apu2"
+scripts/kconfig.pl '+' ".config" "${ROOT_DIR}/.config-apu2" > .config-apu2
+mv .config-apu2 .config
 
-echo "***** LAST 10 CONFIG *****"
-tail -n 10 .config
 
 # update the kernel config
 cat "${ROOT_DIR}/config-kernel-apu2" >> target/linux/x86/config-4.14
