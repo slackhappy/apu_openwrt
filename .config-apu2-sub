@@ -1,0 +1,3 @@
+# delete standalone if set, imagebuilder should
+# pull packages from official openwrt feed
+CONFIG_IB_STANDALONE=y

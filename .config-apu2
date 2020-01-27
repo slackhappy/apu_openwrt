@@ -3,4 +3,13 @@ CONFIG_BUSYBOX_DEFAULT_LSPCI=y
 
 # https://openwrt.org/toh/pcengines/apu2
 # It's possible to further optimize the produced binaries by generating instructions for AMD family 16h cores
-CONFIG_TARGET_OPTIMIZATION="-Os -pipe -march=btver2"
+CONFIG_DEFAULT_TARGET_OPTIMIZATION="-Os -pipe -march=btver2"
+
+# allow download of these packages from openwrt when building image
+CONFIG_FEED_luci=y
+CONFIG_FEED_packages=y
+CONFIG_FEED_routing=y
+CONFIG_FEED_telephony=y
+
+# to support flashing bios via flashrom
+CONFIG_KERNEL_DEVMEM=y

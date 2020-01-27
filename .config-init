@@ -2,4 +2,9 @@
 CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_64=y
 CONFIG_TARGET_x86_64_Generic=y
+# want the image builder
 CONFIG_IB=y
+
+# kmod package versions are pegged to the kernel
+# hash, so cant download the ones from openwrt feed
+CONFIG_ALL_KMODS=y

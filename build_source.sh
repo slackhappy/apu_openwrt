@@ -28,15 +28,16 @@ cd "openwrt-${VERSION}"
 # initialize the config
 mv "${ROOT_DIR}/.config-init" .config
 
-echo "***** MAKING CONFIG *****"
+echo "***** MAKING DEFAULT CONFIG *****"
 # fill in the defaults
 make defconfig
 
-# override some values
-cat "${ROOT_DIR}/.config-apu2" >> .config
+echo "***** UPDATING CONFIG *****"
+cat "${ROOT_DIR}/.config-apu2"
+scripts/kconfig.pl '+' ".config" "${ROOT_DIR}/.config-apu2" > .config-apu2-add
+scripts/kconfig.pl '-' ".config-apu2-add" "${ROOT_DIR}/.config-apu2-sub" > .config-apu2
+mv .config-apu2 .config
 
-echo "***** LAST 10 CONFIG *****"
-tail -n 10 .config
 
 # update the kernel config
 cat "${ROOT_DIR}/config-kernel-apu2" >> target/linux/x86/config-4.14
@@ -49,6 +50,6 @@ make
 
 echo "***** DONE *****"
 ls -lh build_dir/target-x86_64_musl
-cd build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64
+cd build_dir/target-x86_64_musl
 
-tar -cJf "${ROOT_DIR}/openwrt-imagebuilder-${VERSION}x86-64.Linux-x86_64-apu2.tar.xz" .
+tar -cJf "${ROOT_DIR}/openwrt-imagebuilder-${VERSION}-x86-64.Linux-x86_64-apu2.tar.xz" openwrt-imagebuilder-x86-64.Linux-x86_64

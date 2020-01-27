@@ -8,7 +8,7 @@ name: Upload Release Asset
 
 jobs:
   build:
-    name: Upload Release Asset
+    name: Build Artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,11 +17,50 @@ jobs:
         run: |
           ./build.sh 18.06.6
           ./build.sh 19.07.0
+          ./build_source.sh 19.07.0
+      - name: Upload Artifact 18.06
+        id: upload-artifact-18
+        uses: actions/upload-artifact@v1
+        with:
+          path: openwrt-18.06.6-x86-64-combined-ext4.img.gz
+          name: openwrt-18.06.6-x86-64
+      - name: Upload Artifact 19.07
+        id: upload-artifact-19
+        uses: actions/upload-artifact@v1
+        with:
+          path: openwrt-19.07.0-x86-64-combined-ext4.img.gz
+          name: openwrt-19.07.0-x86-64
+      - name: Upload Artifact ImageBuilder 19.07
+        id: upload-artifact-ib
+        uses: actions/upload-artifact@v1
+        with:
+          path: openwrt-imagebuilder-19.07.0-x86-64.Linux-x86_64-apu2.tar.xz
+          name: openwrt-imagebuilder-19.07.0-x86-64
+  release:
+    name: Build Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact 18.06
+        id: download-artifact-18
+        uses: actions/download-artifact@v1
+        with:
+          name: openwrt-18.06.6-x86-64
+      - name: Download Artifact 19.07
+        id: download-artifact-19
+        uses: actions/download-artifact@v1
+        with:
+          name: openwrt-19.07.0-x86-64
+      - name: Download Artifact ImageBuilder 19.07
+        id: download-artifact-ib-19
+        uses: actions/download-artifact@v1
+        with:
+          name: openwrt-imagebuilder-19.07.0-x86-64
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -31,19 +70,29 @@ jobs:
         id: upload-release-asset-18
         uses: actions/upload-release-asset@v1.0.1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: openwrt-18.06.6-x86-64-combined-ext4.img.gz
+          asset_path: openwrt-18.06.6-x86-64/openwrt-18.06.6-x86-64-combined-ext4.img.gz
           asset_name: openwrt-18.06.6-x86-64-combined-ext4.img.gz
           asset_content_type: application/x-gzip
       - name: Upload Release Asset 19.07
         id: upload-release-asset-19
         uses: actions/upload-release-asset@v1.0.1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: openwrt-19.07.0-x86-64-combined-ext4.img.gz
+          asset_path: openwrt-19.07.0-x86-64/openwrt-19.07.0-x86-64-combined-ext4.img.gz
           asset_name: openwrt-19.07.0-x86-64-combined-ext4.img.gz
           asset_content_type: application/x-gzip
+      - name: Upload Release Asset ImageBuilder 19.07
+        id: upload-release-asset-ib-19
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: openwrt-imagebuilder-19.07.0-x86-64/openwrt-imagebuilder-19.07.0-x86-64.Linux-x86_64-apu2.tar.xz
+          asset_name: openwrt-imagebuilder-19.07.0-x86-64.Linux-x86_64-apu2.tar.xz
+          asset_content_type: application/x-xz
