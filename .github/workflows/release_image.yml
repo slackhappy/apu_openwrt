@@ -90,7 +90,7 @@ jobs:
         id: upload-release-asset-ib-19
         uses: actions/upload-release-asset@v1.0.1
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: openwrt-imagebuilder-19.07.0-x86-64/openwrt-imagebuilder-19.07.0-x86-64.Linux-x86_64-apu2.tar.xz
