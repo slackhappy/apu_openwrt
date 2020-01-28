@@ -34,7 +34,8 @@ make defconfig
 
 echo "***** UPDATING CONFIG *****"
 cat "${ROOT_DIR}/.config-apu2"
-scripts/kconfig.pl '+' ".config" "${ROOT_DIR}/.config-apu2" > .config-apu2
+scripts/kconfig.pl '+' ".config" "${ROOT_DIR}/.config-apu2" > .config-apu2-add
+scripts/kconfig.pl '-' ".config-apu2-add" "${ROOT_DIR}/.config-apu2-sub" > .config-apu2
 mv .config-apu2 .config
 
 
