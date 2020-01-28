@@ -40,7 +40,7 @@ mv .config-apu2 .config
 
 
 # update the kernel config
-scripts/kconfig.pl '+'  target/linux/x86/config-4.14 "${ROOT_DIR}/config-kernel-apu2" > target/linux/x86/config-4.14
+cat "${ROOT_DIR}/config-kernel-apu2" >> target/linux/x86/config-4.14
 
 echo "***** LAST 10 KERNELCONFIG *****"
 tail -n 10 target/linux/x86/config-4.14
