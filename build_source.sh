@@ -14,7 +14,11 @@ DEPS="build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gette
 
 ROOT_DIR=$(pwd)
 
-VERSION=19.07.0
+VERSION="$1"
+
+if [ -z "$VERSION" ]; then
+  VERSION="19.07.0"
+fi
 
 echo "***** BUILDING IMAGEBUILDER FOR $VERSION *****"
 
