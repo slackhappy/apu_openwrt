@@ -1,6 +1,6 @@
 # OpenWRT on a PCEngines APU
 
-Here is my walkthrough for getting [OpenWRT](https://openwrt.org/) installed on a [PC Engines APU2](https://pcengines.ch/apu2d2.htm).  
+Here is my walkthrough for getting [OpenWRT](https://openwrt.org/) installed on a [PC Engines APU2](https://pcengines.ch/apu2d2.htm).
 
 Materials I used:
 - a Macbook with no ethernet jack :-(
@@ -18,7 +18,7 @@ Here is the story of how I got it set up.
 
 ## What I wish I knew going in
 
-- If you want to have a linux-based home wireless router, **use OpenWRT, not [IPFire](https://www.ipfire.org/)**.  I like secure systems, but I think IPFire's security defaults are so restrictive that you might not get your system running.  If you don't have an ethernet jack on your laptop from which you can configure the system, don't bother with IPFire.  The wireless system starts with all client MACs dropped by default, and no amount of curling the local perl web configuration scripts seemed to convince it otherwise.  [Here's another take](https://teklager.se/en/knowledge-base/choosing-router-operating-system-pfsense-vs-opnsense-vs-openwrt/).  
+- If you want to have a linux-based home wireless router, **use OpenWRT, not [IPFire](https://www.ipfire.org/)**.  I like secure systems, but I think IPFire's security defaults are so restrictive that you might not get your system running.  If you don't have an ethernet jack on your laptop from which you can configure the system, don't bother with IPFire.  The wireless system starts with all client MACs dropped by default, and no amount of curling the local perl web configuration scripts seemed to convince it otherwise.  [Here's another take](https://teklager.se/en/knowledge-base/choosing-router-operating-system-pfsense-vs-opnsense-vs-openwrt/).
 
 - **Install to an mSATA drive, not an SD Card**.  I had an old Amazon SDHC Class 10 16GB card that worked nicely on the raspberry pi, so I figured that would be a perfect way to install a tiny distro like OpenWRT or IPFire.  I had planned to avoid wearing it down by making sure that all the logs stayed in a ramdisk, etc.  However, the SD support of APU is much worse. My installations of IPFire and OpenWRT, and debian all crashed trying to write to the SD Card.  There are many other examples of issues similar to mine.  For 14 bucks, don't even think about it, just get an mSATA, and save yourself the hassle.
 
@@ -47,13 +47,13 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
 ## Apply your image to the mSATA drive (initial bootstrap)
 [Teklager.se](https://teklager.se/en/knowledge-base/openwrt-installation-instructions/) has a route that I like.  You boot into a live linux that can 1) download an image 2) apply to the mSATA drive 3) fix up the partioning (optional).  The Debian netinst USB can do that, so thats what I'll use.
 
-1. Download the [Debian netinst](https://www.debian.org/CD/netinst/) amd64 iso.  Using `dd`, copy it to a USB drive. 
+1. Download the [Debian netinst](https://www.debian.org/CD/netinst/) amd64 iso.  Using `dd`, copy it to a USB drive.
     Insert the drive, use diskutil list to find and unmount the drive device node /dev/diskX .  Be extra sure you have the right one!
     ```
     $ diskutil list
     $ diskutil unmountDisk /dev/diskX
     ```
-    
+
     Directly apply the image to the drive.  This will **erase everything** on the device! Note the 'r' in rdiskX here.
     ```
     $ sudo dd bs=8m of=/dev/rdiskX if=debian-9.7.0-amd64-netinst.iso
@@ -68,16 +68,16 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
     Download and unzip:
     ```
     ~ # wget https://github.com/slackhappy/apu_openwrt/raw/master/openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz
-    ~ # gunzip openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz 
+    ~ # gunzip openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img.gz
     ```
-    
+
     Apply the image:
     ```
     ~ # dd if=openwrt-18.06.2-apu2-ath10k-qca988x-x86-64-combined-ext4.img of=/dev/sda bs=4M; sync
     68+1 records in
     68+1 records out
     ```
-    
+
     Confirm the image application - should look like this:
     ```
     ~ # parted /dev/sda print
@@ -87,11 +87,11 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
     ```
 
     If you want, expand the 286MB partition to the rest of the disk size (mine is 60G).  Note that upgrading to new OpenWRT images will reset this though.
-    ```  
+    ```
     ~ #  parted /dev/sda resizepart 2 60G
     Information: You may need to update /etc/fstab.
-    
-    ~# resize2fs /dev/sda2 
+
+    ~# resize2fs /dev/sda2
     ```
 1. All done! Remove the USB boot disk, cross your fingers, and `reboot`.
 
@@ -103,3 +103,45 @@ I came up with this procedure by combining the [ImageBuilder docs](https://openw
 1. enable the wireless by editing `/etc/config/wireless` to set disabled from `'1'` to `'0'`
 1. to switch the device to use 2.4ghz bands instead of 5ghz bands, edit `/etc/config/wireless` to set `hwmode` to `11g` instead of `11a` (don't worry, it will use 2.4ghz N if your device has it), and delete the `htmode` line - it will be autodiscovered.
 1. `reboot`
+
+
+
+## Flashing a new ROM
+1. The images provided enable `/dev/mem` which allows for reading and writng the BIOS.  My system came with:
+```
+coreboot build 20170228
+SeaBIOS (version rel-1.10.0.1)
+```
+As the installed BIOS.  That wasn't able to boot the SD card I had - an AmazonBasics SDHC class 10 16GB card
+
+First, I read the current BIOS in case I needed to restore it.  From my laptop, i generated and copied over the old bios:
+
+```
+ssh root@192.168.1.1 flashrom -r oldbios.rom -p internal
+scp root@192.168.1.1:oldbios.rom .
+```
+I downloaded a new rom here: https://pcengines.github.io.  I used v4.11.0.2
+
+```
+ssh root@192.168.1.1
+wget https://3mdeb.com/open-source-firmware/pcengines/apu2/apu2_v4.11.0.2.rom
+sha256sum apu2_v4.11.0.2.rom  # make sure you are using the right rom!  if you have an APU3, choose the apu3 rom instead.
+
+root@OpenWrt:~# flashrom -w apu2_v4.11.0.2.rom -p internal
+flashrom v1.0 on Linux 4.14.162 (x86_64)
+flashrom is free software, get the source code at https://flashrom.org
+
+Using clock_gettime for delay loops (clk_id: 1, resolution: 1ns).
+coreboot table found at 0x77fae000.
+Found chipset "AMD FCH".
+Enabling flash write... OK.
+Found Winbond flash chip "W25Q64.V" (8192 kB, SPI) mapped at physical address 0x00000000ff800000.
+This coreboot image (PC Engines:apu2) does not appear to
+be correct for the detected mainboard (PC Engines:PCEngines apu2).
+Aborting. You can override this with -p internal:boardmismatch=force.
+```
+At this point I had to use the force option (see http://pcengines.info/forums/?page=post&id=0723B84A-74FC-4556-B698-9F61FE459F54)
+
+
+
+

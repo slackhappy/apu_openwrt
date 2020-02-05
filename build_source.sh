@@ -20,6 +20,8 @@ if [ -z "$VERSION" ]; then
   VERSION="19.07.0"
 fi
 
+
+
 echo "***** BUILDING IMAGEBUILDER FOR $VERSION *****"
 
 echo "***** INSTALLING DEPS *****"
@@ -51,7 +53,7 @@ echo "***** LAST 10 KERNELCONFIG *****"
 tail -n 10 target/linux/x86/config-4.14
 
 echo "***** MAKING IMAGEBUILDER *****"
-make
+make V=s
 
 echo "***** DONE *****"
 ls -lh build_dir/target-x86_64_musl

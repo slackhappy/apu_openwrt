@@ -1,0 +1,46 @@
+# https://openwrt.org/toh/pcengines/apu2
+# APU2 basic kernel modules
+kmod-leds-apu2 kmod-leds-gpio  # APU2 front LED control panel
+kmod-crypto-hw-ccp             # AMD Cryptographic Coprocessor
+kmod-gpio-nct5104d             # GPIO pins or COM2/3/4
+kmod-gpio-button-hotplug       # GPIO pins or COM2/3/4
+kmod-sp5100_tco                # Hardware watchdog
+kmod-usb-core kmod-usb-ohci    # USB v2 and v3 support
+kmod-usb2 kmod-usb3            # USB v2 and v3 support
+kmod-sound-core kmod-pcspkr    # Onboard PC speaker
+
+# APU2 additional packages
+amd64-microcode   # AMD CPU microcode
+flashrom          # Tool to update APU BIOS
+irqbalance        # IRQ usage balancing for multi-core systems
+fstrim            # discard unused blocks on SSDs
+
+
+# APU2 PC Engines Supplied WiFi cards: WLE900VX / WLE600VX
+ath10k-firmware-qca988x
+kmod-ath10k
+
+
+# Additional Packages
+adblock
+block-mount
+ca-bundle
+collectd
+collectd-mod-sensors
+fstools
+hostapd
+kmod-fs-vfat
+kmod-rt2800-lib
+kmod-rt2800-usb
+kmod-rt2x00-lib
+kmod-rt2x00-usb
+kmod-usb-storage
+kmod-usb-storage-uas
+luci
+luci-app-statistics
+luci-app-adblock
+rt2800-usb-firmware
+tcpdump
+sysfsutils
+usbutils
+wget
