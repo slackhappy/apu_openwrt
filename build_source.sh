@@ -20,6 +20,8 @@ if [ -z "$VERSION" ]; then
   VERSION="19.07.0"
 fi
 
+
+
 echo "***** BUILDING IMAGEBUILDER FOR $VERSION *****"
 
 echo "***** INSTALLING DEPS *****"
