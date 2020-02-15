@@ -53,4 +53,10 @@ CONFIG_KERNEL_USER_NS=y
 CONFIG_KERNEL_UTS_NS=y
 
 # docker package from https://gitlab.com/mcbridematt/openwrt-container-feed
+# and its associated dependencies
+CONFIG_PACKAGE_ca-certificates=y
 CONFIG_PACKAGE_docker-binary-x86_64=y
+CONFIG_PACKAGE_ip-full=y
+CONFIG_PACKAGE_kmod-veth=y
+CONFIG_PACKAGE_libelf=y
+CONFIG_PACKAGE_zlib=y
