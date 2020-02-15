@@ -51,3 +51,6 @@ CONFIG_KERNEL_PROC_PID_CPUSET=y
 CONFIG_KERNEL_RESOURCE_COUNTERS=y
 CONFIG_KERNEL_USER_NS=y
 CONFIG_KERNEL_UTS_NS=y
+
+# docker package from https://gitlab.com/mcbridematt/openwrt-container-feed
+CONFIG_PACKAGE_docker-binary-x86_64=y

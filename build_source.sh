@@ -32,6 +32,9 @@ echo "***** DOWNLOADING SOURCE FOR $VERSION *****"
 wget -qO- "https://github.com/openwrt/openwrt/archive/v${VERSION}.tar.gz" | tar -xzf -
 cd "openwrt-${VERSION}"
 
+echo "***** DOWNLOAD docker package from https://gitlab.com/mcbridematt/openwrt-container-feed"
+wget -qO- "https://gitlab.com/mcbridematt/openwrt-container-feed/-/archive/master/openwrt-container-feed-master.tar.gz" | tar -C "packages" -xzf - --strip-components 1
+
 # initialize the config
 mv "${ROOT_DIR}/.config-init" .config
 
@@ -53,7 +56,7 @@ echo "***** LAST 10 KERNELCONFIG *****"
 tail -n 10 target/linux/x86/config-4.14
 
 echo "***** MAKING IMAGEBUILDER *****"
-make V=s
+make || make V=s
 
 echo "***** DONE *****"
 ls -lh build_dir/target-x86_64_musl
