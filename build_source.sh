@@ -7,6 +7,7 @@ set -eo pipefail
 SUDO="sudo"
 if [ "$(whoami)" == "root" ]; then
   SUDO=""
+  export FORCE_UNSAFE_CONFIGURE=1
 fi
 
 
