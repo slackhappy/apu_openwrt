@@ -73,7 +73,7 @@ ls -lh "${ROOT_DIR}"
 
 echo "***** GENERATING IMAGE *****"
 
-PACKAGES="$(cat PACKAGES | sed -e 's/#.*$//' | xargs)"
+PACKAGES="$(cat "${ROOT_DIR}/PACKAGES" | sed -e 's/#.*$//' | xargs)"
 cd build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64
 make image PACKAGES="${PACKAGES}"
 
