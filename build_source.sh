@@ -59,9 +59,25 @@ tail -n 10 target/linux/x86/config-4.14
 echo "***** MAKING IMAGEBUILDER *****"
 make || make V=s
 
-echo "***** DONE *****"
+# copy any packages that would be ignored by non-standalone
+# currently just docker
+echo "***** COPYING PACKAGES TO IMAGEBUILDER *****"
+cp staging_dir/packages/x86/docker-binary-x86_64*.ipk build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64/packages/
+
+echo "***** GENERATING IMAGEBUILDER ARCHIVE *****"
 ls -lh build_dir/target-x86_64_musl
 cd build_dir/target-x86_64_musl
 
 tar -cJf "${ROOT_DIR}/openwrt-imagebuilder-${VERSION}-x86-64.Linux-x86_64-apu2.tar.xz" openwrt-imagebuilder-x86-64.Linux-x86_64
 ls -lh "${ROOT_DIR}"
+
+echo "***** GENERATING IMAGE *****"
+
+PACKAGES="$(cat PACKAGES | sed -e 's/#.*$//' | xargs)"
+cd build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64
+make image PACKAGES="${PACKAGES}"
+
+echo "***** OUTPUT *****"
+ls -lh bin/targets/x86/64
+cp bin/targets/x86/64/openwrt-${VERSION}-x86-64-combined-ext4.img.gz ${ROOT_DIR}/openwrt-${VERSION}-x86-64-combined-ext4.img.gz
+

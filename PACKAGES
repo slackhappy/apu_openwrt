@@ -48,3 +48,6 @@ tcpdump
 sysfsutils
 usbutils
 wget
+
+# Docker
+docker-binary-x86_64
