@@ -21,6 +21,11 @@ if [ -z "$VERSION" ]; then
   VERSION="19.07.0"
 fi
 
+MAKEFLAGS="$2"
+
+if [ -z "$MAKEFLAGS" ]; then
+  MAKEFLAGS=
+fi
 
 
 echo "***** BUILDING IMAGEBUILDER FOR $VERSION *****"
@@ -57,7 +62,7 @@ echo "***** LAST 10 KERNELCONFIG *****"
 tail -n 10 target/linux/x86/config-4.14
 
 echo "***** MAKING IMAGEBUILDER *****"
-make || make V=s
+make $MAKEFLAGS || make $MAKEFLAGS V=s
 
 # copy any packages that would be ignored by non-standalone
 # currently just docker
@@ -74,10 +79,10 @@ ls -lh "${ROOT_DIR}"
 echo "***** GENERATING IMAGE *****"
 
 PACKAGES="$(cat "${ROOT_DIR}/PACKAGES" | sed -e 's/#.*$//' | xargs)"
-cd build_dir/target-x86_64_musl/openwrt-imagebuilder-x86-64.Linux-x86_64
+cd openwrt-imagebuilder-x86-64.Linux-x86_64
 make image PACKAGES="${PACKAGES}"
 
 echo "***** OUTPUT *****"
 ls -lh bin/targets/x86/64
-cp bin/targets/x86/64/openwrt-${VERSION}-x86-64-combined-ext4.img.gz ${ROOT_DIR}/openwrt-${VERSION}-x86-64-combined-ext4.img.gz
+cp bin/targets/x86/64/openwrt-x86-64-combined-ext4.img.gz ${ROOT_DIR}/openwrt-${VERSION}-x86-64-combined-ext4.img.gz
 
