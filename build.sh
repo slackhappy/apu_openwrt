@@ -6,7 +6,7 @@ set -eo pipefail
 VERSION="$1"
 
 if [ -z "$VERSION" ]; then
-  VERSION="18.06.2"
+  VERSION="21.02.0"
 fi
 
 echo "***** BUILDING IMAGE FOR $VERSION *****"
@@ -23,7 +23,7 @@ DEPS="build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gette
 
 
 
-PACKAGES="adblock ath10k-firmware-qca988x block-mount ca-bundle collectd collectd-mod-sensors flashrom fstools hostapd kmod-ath10k kmod-crypto-hw-ccp kmod-fs-vfat kmod-gpio-button-hotplug kmod-gpio-nct5104d kmod-leds-gpio kmod-pcspkr kmod-rt2800-lib kmod-rt2800-usb kmod-rt2x00-lib kmod-rt2x00-usb kmod-sound-core kmod-sp5100_tco kmod-usb-ohci kmod-usb-storage kmod-usb-storage-uas kmod-usb2 kmod-usb3 luci luci-app-statistics luci-app-adblock rt2800-usb-firmware tcpdump sysfsutils usbutils wget"
+PACKAGES="adblock ath10k-firmware-qca988x block-mount ca-bundle collectd collectd-mod-sensors flashrom fstools hostapd kmod-ath10k kmod-crypto-hw-ccp kmod-fs-vfat kmod-gpio-button-hotplug kmod-gpio-nct5104d kmod-leds-gpio kmod-pcengines-apuv2 kmod-pcspkr kmod-rt2800-lib kmod-rt2800-usb kmod-rt2x00-lib kmod-rt2x00-usb kmod-sound-core kmod-sp5100-tco kmod-usb-ohci kmod-usb-storage kmod-usb-storage-uas kmod-usb2 kmod-usb3 luci luci-app-statistics luci-app-adblock rt2800-usb-firmware tcpdump sysfsutils usbutils wget"
 
 
 BUILDER_NAME="openwrt-imagebuilder-${VERSION}-x86-64.Linux-x86_64"
@@ -46,4 +46,4 @@ make image PACKAGES="${PACKAGES}"
 
 echo "***** OUTPUT *****"
 ls -lh bin/targets/x86/64
-cp bin/targets/x86/64/openwrt-${VERSION}-x86-64-combined-ext4.img.gz ../openwrt-${VERSION}-x86-64-combined-ext4.img.gz
+cp bin/targets/x86/64/openwrt-${VERSION}-x86-64-generic-ext4-combined.img.gz ../openwrt-${VERSION}-x86-64-generic-ext4-combined.img.gz

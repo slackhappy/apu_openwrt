@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: builds the 18.06.6 image
+    - name: builds the 21.02.0 image
       run: |
-        ./build.sh 18.06.6
+        ./build.sh 21.02.0
         echo done
