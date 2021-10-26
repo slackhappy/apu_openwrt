@@ -48,7 +48,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -58,7 +58,7 @@ jobs:
         id: upload-release-asset-21
         uses: actions/upload-release-asset@v1.0.1
         env:
-          GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: openwrt-21.02.0-x86-64/openwrt-21.02.0-x86-64-generic-ext4-combined.img.gz
@@ -68,7 +68,7 @@ jobs:
 #       id: upload-release-asset-ib-21
 #       uses: actions/upload-release-asset@v1.0.1
 #       env:
-#         GITHUB_TOKEN: ${{ secrets.apu_openwrt_token }}
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #       with:
 #         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
 #         asset_path: openwrt-imagebuilder-21.02.0-x86-64/openwrt-imagebuilder-21.02.0-x86-64.Linux-x86_64-apu2.tar.xz
